@@ -181,11 +181,12 @@
     - 'interface_name in ip_route.stdout'
 
 - name: remove interface {{ interface_name }} from routing table and proceed to firmware upgrade / downgrade
-  command: "ip route del {{ grep_interface.stdout }}"
+  command: "ip route del {{ item }}"
+  with_items: "{{ grep_interface.stdout_lines }}"
+  changed_when: true
   when:
     - continue_nvmupdate | bool
     - 'interface_name in ip_route.stdout'
-  changed_when: true
 
 - debug:
     msg: >-
